@@ -1,3 +1,9 @@
+// 2022 Daniel Strebkov
+//
+//	https://gitlab.com/maddsua/
+
+// This version uses SD card to store data. No realtime transmissions
+
 #include <Wire.h>
 #include <dht11.h>
 #include <Adafruit_Sensor.h>
