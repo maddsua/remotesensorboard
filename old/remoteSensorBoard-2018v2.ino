@@ -1,8 +1,8 @@
-// 2018 Daniel Strebkov
+//	2018 Daniel Strebkov
 //
 //	https://gitlab.com/maddsua/
 
-// Wireless version with HC-12 UART module
+// This version uses SD card to store data. No realtime transmissions
 
 #include <dht11.h>
 dht11 DHT;
@@ -18,8 +18,12 @@ Adafruit_ADXL345_Unified accel = Adafruit_ADXL345_Unified(12345);
 int PIN_CHIP_SELECT = 5;
 
 int pin_buzz = 10;
+int pin_air = (A0);
+int pin_smoke = (A1);
+int echoPin = 4;
+int trigPin = 3;
 
-String startmsg = ">> [black box initialized]\nTIME, TEMP, HUM, aX, aY, aZ";
+String startmsg = ">> [black box initialized]\nTIME, TEMP, HUM, ACL, SL, aX, aY, aZ, SNR";
 String dwr = ">> [DATA WRITE ERROR!]";
 
 void setup() {
@@ -27,6 +31,9 @@ void setup() {
 
   //pin modes
   pinMode(pin_buzz, OUTPUT);
+  pinMode(10, OUTPUT);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
 
   accel.begin();
   accel.setRange(ADXL345_RANGE_16_G);
@@ -58,6 +65,10 @@ void loop() {
   DHT.read(DHT11_PIN);
   int hum = (DHT.humidity);
   int temp = (DHT.temperature);
+  
+  //analog sensors read
+  int airclean = analogRead(pin_air)/10;
+  int smokelevel = analogRead(pin_smoke)/10;
 
   //accelerometer
   sensors_event_t event; 
@@ -65,9 +76,17 @@ void loop() {
   float accelx = (event.acceleration.x);
   float accely = (event.acceleration.y);
   float accelz = (event.acceleration.z);
+
+  //sonar distanse
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  int dist = pulseIn(echoPin, HIGH)/58;
   
   //creating string log
-  String writetelemetry = String(worktime)+", "+String(temp)+", "+String(hum)+", "+String(accelx)+", "+String(accely)+", "+String(accelz);
+  String writetelemetry = String(worktime)+", "+String(temp)+", "+String(hum)+", "+String(airclean)+", "+String(smokelevel)+", "+String(accelx)+", "+String(accely)+", "+String(accelz)+", "+String(dist);
 
   
   Serial.println(writetelemetry);
@@ -110,6 +129,11 @@ void loop() {
     delay(150);
     digitalWrite(pin_buzz, LOW);
   }
+
+
   
   delay(500);
+
+
+//-------------
 }

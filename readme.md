@@ -36,9 +36,9 @@ Premade 0.5 x 0.6 meters, synthetic fabric
 
 [Offline data log csv](_doc/datalog_sample.csv "Data log sample")
 
-[Stream data log](_doc/stream_sample.log "Data log sample")
+[Stream data log excel](_doc/stream_sample.csv "Data log sample")
 
-[Stream data log csv](_doc/stream_sample.csv "Data log sample")
+[Stream data log csv](_doc/stream_sample.xlsx "Data log sample")
 
 **The data still is not calibrated due to use of different sensor revisions**
 
